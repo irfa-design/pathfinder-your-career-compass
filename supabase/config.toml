@@ -1,0 +1,7 @@
+project_id = "wlrsqtzmeemtjjnfgbua"
+
+[functions.recommend-school]
+verify_jwt = false
+
+[functions.recommend-college]
+verify_jwt = false
