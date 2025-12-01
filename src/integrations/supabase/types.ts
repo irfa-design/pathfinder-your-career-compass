@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      career_clusters: {
+        Row: {
+          cluster_name: string
+          created_at: string | null
+          description: string | null
+          id: string
+          matching_careers: string[]
+          personality_types: string[]
+        }
+        Insert: {
+          cluster_name: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          matching_careers: string[]
+          personality_types: string[]
+        }
+        Update: {
+          cluster_name?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          matching_careers?: string[]
+          personality_types?: string[]
+        }
+        Relationships: []
+      }
       careers: {
         Row: {
           description: string | null
@@ -85,28 +112,82 @@ export type Database = {
       }
       colleges: {
         Row: {
+          budget_max: number | null
+          budget_min: number | null
+          city: string | null
           courses_offered: string[] | null
+          facilities: string[] | null
           fee_type: string | null
           id: string
           location: string
           min_mark: number | null
           name: string
+          placement_percentage: number | null
+          scholarship_available: boolean | null
+          state: string | null
         }
         Insert: {
+          budget_max?: number | null
+          budget_min?: number | null
+          city?: string | null
           courses_offered?: string[] | null
+          facilities?: string[] | null
           fee_type?: string | null
           id?: string
           location: string
           min_mark?: number | null
           name: string
+          placement_percentage?: number | null
+          scholarship_available?: boolean | null
+          state?: string | null
         }
         Update: {
+          budget_max?: number | null
+          budget_min?: number | null
+          city?: string | null
           courses_offered?: string[] | null
+          facilities?: string[] | null
           fee_type?: string | null
           id?: string
           location?: string
           min_mark?: number | null
           name?: string
+          placement_percentage?: number | null
+          scholarship_available?: boolean | null
+          state?: string | null
+        }
+        Relationships: []
+      }
+      course_roadmaps: {
+        Row: {
+          career_outcomes: string[] | null
+          course_name: string
+          created_at: string | null
+          entrance_exams: string[] | null
+          id: string
+          milestones: Json
+          resources: Json | null
+          stream: string
+        }
+        Insert: {
+          career_outcomes?: string[] | null
+          course_name: string
+          created_at?: string | null
+          entrance_exams?: string[] | null
+          id?: string
+          milestones: Json
+          resources?: Json | null
+          stream: string
+        }
+        Update: {
+          career_outcomes?: string[] | null
+          course_name?: string
+          created_at?: string | null
+          entrance_exams?: string[] | null
+          id?: string
+          milestones?: Json
+          resources?: Json | null
+          stream?: string
         }
         Relationships: []
       }
@@ -134,6 +215,66 @@ export type Database = {
           related_interests?: string[] | null
           related_subjects?: string[] | null
           stream?: string
+        }
+        Relationships: []
+      }
+      internship_roles: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          experience_level: string
+          id: string
+          recommended_for: string[] | null
+          required_skills: string[]
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          experience_level: string
+          id?: string
+          recommended_for?: string[] | null
+          required_skills: string[]
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          experience_level?: string
+          id?: string
+          recommended_for?: string[] | null
+          required_skills?: string[]
+          title?: string
+        }
+        Relationships: []
+      }
+      learning_paths: {
+        Row: {
+          certifications: string[] | null
+          created_at: string | null
+          id: string
+          role_name: string
+          skill_levels: Json
+          timeline_weeks: number | null
+          tools: string[] | null
+        }
+        Insert: {
+          certifications?: string[] | null
+          created_at?: string | null
+          id?: string
+          role_name: string
+          skill_levels: Json
+          timeline_weeks?: number | null
+          tools?: string[] | null
+        }
+        Update: {
+          certifications?: string[] | null
+          created_at?: string | null
+          id?: string
+          role_name?: string
+          skill_levels?: Json
+          timeline_weeks?: number | null
+          tools?: string[] | null
         }
         Relationships: []
       }
@@ -166,12 +307,15 @@ export type Database = {
           achievements: string[] | null
           average_mark: number
           board: string | null
+          budget_range: string | null
           class_level: string
           created_at: string | null
+          distance_preference: string | null
           favorite_subjects: string[]
           id: string
           interests: string[]
           name: string
+          personality_type: string | null
           preferred_location: string | null
           updated_at: string | null
           user_id: string | null
@@ -180,12 +324,15 @@ export type Database = {
           achievements?: string[] | null
           average_mark: number
           board?: string | null
+          budget_range?: string | null
           class_level: string
           created_at?: string | null
+          distance_preference?: string | null
           favorite_subjects: string[]
           id?: string
           interests: string[]
           name: string
+          personality_type?: string | null
           preferred_location?: string | null
           updated_at?: string | null
           user_id?: string | null
@@ -194,12 +341,15 @@ export type Database = {
           achievements?: string[] | null
           average_mark?: number
           board?: string | null
+          budget_range?: string | null
           class_level?: string
           created_at?: string | null
+          distance_preference?: string | null
           favorite_subjects?: string[]
           id?: string
           interests?: string[]
           name?: string
+          personality_type?: string | null
           preferred_location?: string | null
           updated_at?: string | null
           user_id?: string | null

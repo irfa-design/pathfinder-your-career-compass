@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, BookOpen, GraduationCap } from "lucide-react";
@@ -25,6 +27,8 @@ const formSchema = z.object({
   average_mark: z.coerce.number().min(0).max(100, "Mark must be between 0 and 100"),
   preferred_location: z.string().optional(),
   achievements: z.string().optional(),
+  budget_range: z.string().optional(),
+  distance_preference: z.string().optional(),
 });
 
 export default function SchoolStudent() {
@@ -43,6 +47,8 @@ export default function SchoolStudent() {
       average_mark: 0,
       preferred_location: "",
       achievements: "",
+      budget_range: "",
+      distance_preference: "",
     },
   });
 
@@ -67,6 +73,8 @@ export default function SchoolStudent() {
         average_mark: values.average_mark,
         preferred_location: values.preferred_location || null,
         achievements: values.achievements ? values.achievements.split(',').map(a => a.trim()) : [],
+        budget_range: values.budget_range || null,
+        distance_preference: values.distance_preference || null,
       };
 
       const { data: profile, error: profileError } = await supabase
@@ -90,7 +98,7 @@ export default function SchoolStudent() {
       });
 
       toast({ title: "Success!", description: "Your recommendations are ready" });
-      navigate('/school-results', { state: { recommendations, profile: profileData } });
+      navigate('/school-results', { state: { profileId: profile.id } });
     } catch (error: any) {
       console.error('Error:', error);
       toast({ title: "Error", description: error.message || "Failed to generate recommendations", variant: "destructive" });
@@ -274,6 +282,68 @@ export default function SchoolStudent() {
                     <FormLabel>Achievements (Optional)</FormLabel>
                     <FormControl>
                       <Textarea placeholder="Comma separated: Hackathon, Sports, NCC..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="budget_range"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>College Budget Range</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-2"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="low" id="low" />
+                          <Label htmlFor="low" className="font-normal cursor-pointer">Low (Under ₹50,000/year)</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="medium" id="medium" />
+                          <Label htmlFor="medium" className="font-normal cursor-pointer">Medium (₹50,000 - ₹2,00,000/year)</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="high" id="high" />
+                          <Label htmlFor="high" className="font-normal cursor-pointer">High (Above ₹2,00,000/year)</Label>
+                        </div>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="distance_preference"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>Travel Distance Preference</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-2"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="local" id="local" />
+                          <Label htmlFor="local" className="font-normal cursor-pointer">Local (Same city)</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="state" id="state" />
+                          <Label htmlFor="state" className="font-normal cursor-pointer">Within state</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="national" id="national" />
+                          <Label htmlFor="national" className="font-normal cursor-pointer">Anywhere in India</Label>
+                        </div>
+                      </RadioGroup>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
