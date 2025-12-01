@@ -17,18 +17,34 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const systemPrompt = `You are an expert career counselor for school students. Based on the student's profile, recommend suitable streams, courses, and explain why. Return recommendations in JSON format with this structure:
+    const systemPrompt = `You are an expert career counselor for school students. Based on the student's profile including personality traits, recommend suitable streams, courses, career paths, and college options. Return recommendations in JSON format with this structure:
 {
-  "streams": ["stream1", "stream2"],
+  "personality_type": "RIASEC type (R/I/A/S/E/C)",
+  "personality_description": "brief description of personality",
+  "recommended_streams": ["Science", "Commerce", "Arts"],
   "courses": [
     {
-      "name": "course name",
+      "name": "course name (e.g., B.E CSE, MBBS, BBA)",
       "stream": "stream",
-      "reason": "why this course matches the student",
-      "match_score": 85
+      "reason": "why this matches the student",
+      "match_score": 85,
+      "career_outcomes": ["career1", "career2"],
+      "entrance_exams": ["exam1", "exam2"]
     }
   ],
-  "explanation": "overall guidance message"
+  "roadmap": {
+    "milestones": [
+      {"stage": "12th Grade", "focus": "what to focus on", "timeline": "now"},
+      {"stage": "Entrance Prep", "focus": "exam preparation", "timeline": "6-12 months"},
+      {"stage": "Degree", "focus": "college education", "timeline": "3-4 years"},
+      {"stage": "Career Entry", "focus": "first job/internship", "timeline": "after graduation"}
+    ]
+  },
+  "college_preferences": {
+    "suggested_budget": "low/medium/high",
+    "location_importance": "high/medium/low"
+  },
+  "guidance": "personalized career advice"
 }`;
 
     const userPrompt = `Student Profile:
@@ -37,8 +53,10 @@ serve(async (req) => {
 - Interests: ${profileData.interests.join(', ')}
 - Average Mark: ${profileData.average_mark}%
 - Achievements: ${profileData.achievements?.join(', ') || 'None'}
+- Budget Range: ${profileData.budget_range || 'Not specified'}
+- Location Preference: ${profileData.distance_preference || 'Not specified'}
 
-Please recommend the best 3-5 degree courses for this student based on their profile.`;
+Analyze their personality type (RIASEC model) based on interests and subjects, then recommend the best 3-5 degree courses with detailed career paths and a step-by-step roadmap from 12th grade to career entry.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

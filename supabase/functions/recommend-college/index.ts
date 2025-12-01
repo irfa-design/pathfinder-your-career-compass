@@ -17,27 +17,64 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const systemPrompt = `You are an expert career counselor for college students. Based on the student's profile and career goal, perform a skill gap analysis and recommend skills to learn and certifications to pursue. Return recommendations in JSON format with this structure:
+    const systemPrompt = `You are an expert career counselor for college students. Provide comprehensive career guidance including skill gap analysis, learning roadmap, alternative career paths, and internship recommendations. Return in JSON format:
 {
-  "career_role": "target career",
-  "required_skills": ["skill1", "skill2", ...],
-  "skills_you_have": ["skill1", ...],
+  "career_role": "primary target role",
+  "alternative_roles": ["role1", "role2"],
+  "required_skills": ["skill1", "skill2"],
+  "skills_you_have": ["skill1"],
   "skills_to_learn": [
     {
       "skill": "skill name",
       "priority": "high|medium|low",
-      "reason": "why this skill is important"
+      "reason": "why important",
+      "learning_time": "2-4 weeks"
     }
   ],
+  "learning_roadmap": {
+    "timeline_weeks": 16,
+    "phases": [
+      {
+        "phase": "Beginner",
+        "weeks": "1-4",
+        "skills": ["skill1", "skill2"],
+        "projects": ["project idea"],
+        "resources": ["resource links"]
+      },
+      {
+        "phase": "Intermediate",
+        "weeks": "5-10",
+        "skills": ["skill3", "skill4"],
+        "projects": ["project idea"],
+        "resources": ["resource links"]
+      },
+      {
+        "phase": "Advanced",
+        "weeks": "11-16",
+        "skills": ["skill5"],
+        "projects": ["capstone project"],
+        "resources": ["resource links"]
+      }
+    ]
+  },
   "recommended_certifications": [
     {
-      "name": "certification name",
+      "name": "cert name",
       "provider": "provider",
-      "reason": "why this certification helps"
+      "priority": "high|medium|low",
+      "reason": "why it helps"
+    }
+  ],
+  "internship_recommendations": [
+    {
+      "title": "role title",
+      "required_skills": ["skill1", "skill2"],
+      "readiness_level": "ready|2-months|4-months"
     }
   ],
   "readiness_percentage": 70,
-  "guidance": "personalized career advice"
+  "certificate_analysis": "analysis of existing certificates and how they help",
+  "guidance": "personalized career and next steps advice"
 }`;
 
     const userPrompt = `Student Profile:
@@ -49,7 +86,13 @@ serve(async (req) => {
 - Certificates: ${profileData.certificates?.join(', ') || 'None'}
 - Achievements: ${profileData.achievements?.join(', ') || 'None'}
 
-Please analyze their skill gap for their career goal and recommend skills to learn and certifications to pursue.`;
+Perform comprehensive analysis:
+1. Identify skill gaps for their career goal
+2. Create a detailed learning roadmap (beginner → intermediate → advanced)
+3. Suggest alternative career paths that match their profile
+4. Analyze their existing certificates and achievements
+5. Recommend suitable internship roles with readiness timeline
+6. Provide actionable next steps`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
