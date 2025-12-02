@@ -13,7 +13,11 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, BookOpen, GraduationCap } from "lucide-react";
+import { 
+  Loader2, BookOpen, GraduationCap, ChevronLeft, Sparkles,
+  Brain, MapPin, Wallet, CheckCircle2, Heart, Target
+} from "lucide-react";
+import { ProfileCompletion } from "@/components/features/ProfileCompletion";
 
 const subjects = ["Mathematics", "Physics", "Chemistry", "Biology", "Computer Science", "Commerce", "Economics", "English", "History", "Art"];
 const interests = ["coding", "design", "medicine", "business", "arts", "engineering", "teaching", "research", "sports", "social-work"];
@@ -51,6 +55,15 @@ export default function SchoolStudent() {
       distance_preference: "",
     },
   });
+
+  const watchedFields = form.watch();
+  const completionSteps = [
+    { id: "name", label: "Add your name", completed: !!watchedFields.name },
+    { id: "subjects", label: "Select favorite subjects", completed: watchedFields.favorite_subjects?.length > 0 },
+    { id: "interests", label: "Choose interests", completed: watchedFields.interests?.length > 0 },
+    { id: "mark", label: "Enter average mark", completed: watchedFields.average_mark > 0 },
+    { id: "budget", label: "Set budget preference", completed: !!watchedFields.budget_range },
+  ];
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -108,263 +121,226 @@ export default function SchoolStudent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
-      <div className="container max-w-3xl mx-auto py-12 px-4">
-        <div className="mb-8 text-center">
-          <div className="flex justify-center mb-4">
-            <div className="p-3 rounded-full bg-primary/10">
-              <BookOpen className="w-10 h-10 text-primary" />
+    <div className="min-h-screen bg-background">
+      {/* Animated background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-primary/10 blur-3xl animate-float" />
+        <div className="absolute bottom-20 -left-40 w-80 h-80 rounded-full bg-accent/10 blur-3xl animate-float animation-delay-300" />
+      </div>
+
+      <div className="relative max-w-5xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-8">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
+            <ChevronLeft className="w-5 h-5" />
+          </Button>
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
+              <BookOpen className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-display font-bold">Student Profile</h1>
+              <p className="text-sm text-muted-foreground">Tell us about yourself to get personalized recommendations</p>
             </div>
           </div>
-          <h1 className="text-4xl font-bold mb-3 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Student Profile
-          </h1>
-          <p className="text-muted-foreground text-lg">Tell us about yourself to get personalized recommendations</p>
         </div>
 
-        <div className="bg-card rounded-2xl shadow-lg p-8 border border-border/50">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Full Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter your name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Sidebar */}
+          <div className="lg:col-span-1 space-y-6">
+            <ProfileCompletion steps={completionSteps} />
+            
+            <div className="glass rounded-2xl p-6">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-primary" />
+                Quick Tips
+              </h3>
+              <ul className="space-y-3 text-sm text-muted-foreground">
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
+                  Select subjects you genuinely enjoy, not just the ones you're good at
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
+                  Your interests help us find career paths you'll love
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
+                  Budget and location help filter the best colleges for you
+                </li>
+              </ul>
+            </div>
+          </div>
 
-              <FormField
-                control={form.control}
-                name="class_level"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Class</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select class" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="10">10th Grade</SelectItem>
-                        <SelectItem value="11">11th Grade</SelectItem>
-                        <SelectItem value="12">12th Grade</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="board"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Board (Optional)</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., CBSE, ICSE, State Board" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="favorite_subjects"
-                render={() => (
-                  <FormItem>
-                    <FormLabel>Favorite Subjects</FormLabel>
-                    <div className="grid grid-cols-2 gap-3 mt-2">
-                      {subjects.map((subject) => (
-                        <FormField
-                          key={subject}
-                          control={form.control}
-                          name="favorite_subjects"
-                          render={({ field }) => (
-                            <FormItem className="flex items-center space-x-2 space-y-0">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value?.includes(subject)}
-                                  onCheckedChange={(checked) => {
-                                    return checked
-                                      ? field.onChange([...field.value, subject])
-                                      : field.onChange(field.value?.filter((value) => value !== subject))
-                                  }}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">{subject}</FormLabel>
-                            </FormItem>
-                          )}
-                        />
-                      ))}
+          {/* Main Form */}
+          <div className="lg:col-span-2">
+            <div className="glass rounded-2xl p-8 animate-fade-in">
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  {/* Basic Info */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <GraduationCap className="w-4 h-4 text-primary" />
+                      </div>
+                      <h2 className="font-semibold">Basic Information</h2>
                     </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                    
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <FormField control={form.control} name="name" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Full Name</FormLabel>
+                          <FormControl><Input placeholder="Enter your name" className="bg-background" {...field} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
 
-              <FormField
-                control={form.control}
-                name="interests"
-                render={() => (
-                  <FormItem>
-                    <FormLabel>Interests</FormLabel>
-                    <div className="grid grid-cols-2 gap-3 mt-2">
-                      {interests.map((interest) => (
-                        <FormField
-                          key={interest}
-                          control={form.control}
-                          name="interests"
-                          render={({ field }) => (
-                            <FormItem className="flex items-center space-x-2 space-y-0">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value?.includes(interest)}
-                                  onCheckedChange={(checked) => {
-                                    return checked
-                                      ? field.onChange([...field.value, interest])
-                                      : field.onChange(field.value?.filter((value) => value !== interest))
-                                  }}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer capitalize">{interest.replace('-', ' ')}</FormLabel>
-                            </FormItem>
-                          )}
-                        />
-                      ))}
+                      <FormField control={form.control} name="class_level" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Class</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl><SelectTrigger className="bg-background"><SelectValue placeholder="Select class" /></SelectTrigger></FormControl>
+                            <SelectContent>
+                              <SelectItem value="10">10th Grade</SelectItem>
+                              <SelectItem value="11">11th Grade</SelectItem>
+                              <SelectItem value="12">12th Grade</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+
+                      <FormField control={form.control} name="board" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Board (Optional)</FormLabel>
+                          <FormControl><Input placeholder="e.g., CBSE, ICSE" className="bg-background" {...field} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+
+                      <FormField control={form.control} name="average_mark" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Average Mark (%)</FormLabel>
+                          <FormControl><Input type="number" placeholder="e.g., 85" className="bg-background" {...field} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
                     </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  </div>
 
-              <FormField
-                control={form.control}
-                name="average_mark"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Average Mark (%)</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="e.g., 85" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  {/* Subjects */}
+                  <div className="space-y-4 pt-6 border-t border-border/50">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                        <Target className="w-4 h-4 text-accent" />
+                      </div>
+                      <h2 className="font-semibold">Favorite Subjects</h2>
+                    </div>
+                    <FormField control={form.control} name="favorite_subjects" render={() => (
+                      <FormItem>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                          {subjects.map((subject) => (
+                            <FormField key={subject} control={form.control} name="favorite_subjects" render={({ field }) => (
+                              <FormItem className="flex items-center space-x-2 space-y-0">
+                                <FormControl>
+                                  <Checkbox checked={field.value?.includes(subject)} onCheckedChange={(checked) => checked ? field.onChange([...field.value, subject]) : field.onChange(field.value?.filter((v) => v !== subject))} className="data-[state=checked]:bg-primary" />
+                                </FormControl>
+                                <FormLabel className="font-normal cursor-pointer text-sm">{subject}</FormLabel>
+                              </FormItem>
+                            )} />
+                          ))}
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                  </div>
 
-              <FormField
-                control={form.control}
-                name="preferred_location"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Preferred Location (Optional)</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., Delhi, Mumbai" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  {/* Interests */}
+                  <div className="space-y-4 pt-6 border-t border-border/50">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center">
+                        <Heart className="w-4 h-4 text-success" />
+                      </div>
+                      <h2 className="font-semibold">Interests</h2>
+                    </div>
+                    <FormField control={form.control} name="interests" render={() => (
+                      <FormItem>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                          {interests.map((interest) => (
+                            <FormField key={interest} control={form.control} name="interests" render={({ field }) => (
+                              <FormItem className="flex items-center space-x-2 space-y-0">
+                                <FormControl>
+                                  <Checkbox checked={field.value?.includes(interest)} onCheckedChange={(checked) => checked ? field.onChange([...field.value, interest]) : field.onChange(field.value?.filter((v) => v !== interest))} className="data-[state=checked]:bg-success" />
+                                </FormControl>
+                                <FormLabel className="font-normal cursor-pointer text-sm capitalize">{interest.replace('-', ' ')}</FormLabel>
+                              </FormItem>
+                            )} />
+                          ))}
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                  </div>
 
-              <FormField
-                control={form.control}
-                name="achievements"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Achievements (Optional)</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Comma separated: Hackathon, Sports, NCC..." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  {/* Preferences */}
+                  <div className="space-y-4 pt-6 border-t border-border/50">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-8 h-8 rounded-lg bg-warning/10 flex items-center justify-center">
+                        <Wallet className="w-4 h-4 text-warning" />
+                      </div>
+                      <h2 className="font-semibold">College Preferences</h2>
+                    </div>
+                    
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <FormField control={form.control} name="budget_range" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Budget Range</FormLabel>
+                          <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="space-y-2">
+                            <div className="flex items-center space-x-2"><RadioGroupItem value="low" id="low" /><Label htmlFor="low" className="font-normal cursor-pointer text-sm">Under ₹50K/year</Label></div>
+                            <div className="flex items-center space-x-2"><RadioGroupItem value="medium" id="medium" /><Label htmlFor="medium" className="font-normal cursor-pointer text-sm">₹50K - ₹2L/year</Label></div>
+                            <div className="flex items-center space-x-2"><RadioGroupItem value="high" id="high" /><Label htmlFor="high" className="font-normal cursor-pointer text-sm">Above ₹2L/year</Label></div>
+                          </RadioGroup>
+                        </FormItem>
+                      )} />
 
-              <FormField
-                control={form.control}
-                name="budget_range"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>College Budget Range</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex flex-col space-y-2"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="low" id="low" />
-                          <Label htmlFor="low" className="font-normal cursor-pointer">Low (Under ₹50,000/year)</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="medium" id="medium" />
-                          <Label htmlFor="medium" className="font-normal cursor-pointer">Medium (₹50,000 - ₹2,00,000/year)</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="high" id="high" />
-                          <Label htmlFor="high" className="font-normal cursor-pointer">High (Above ₹2,00,000/year)</Label>
-                        </div>
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormField control={form.control} name="distance_preference" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Distance Preference</FormLabel>
+                          <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="space-y-2">
+                            <div className="flex items-center space-x-2"><RadioGroupItem value="local" id="local" /><Label htmlFor="local" className="font-normal cursor-pointer text-sm">Same city</Label></div>
+                            <div className="flex items-center space-x-2"><RadioGroupItem value="state" id="state" /><Label htmlFor="state" className="font-normal cursor-pointer text-sm">Within state</Label></div>
+                            <div className="flex items-center space-x-2"><RadioGroupItem value="national" id="national" /><Label htmlFor="national" className="font-normal cursor-pointer text-sm">Anywhere in India</Label></div>
+                          </RadioGroup>
+                        </FormItem>
+                      )} />
+                    </div>
 
-              <FormField
-                control={form.control}
-                name="distance_preference"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>Travel Distance Preference</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex flex-col space-y-2"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="local" id="local" />
-                          <Label htmlFor="local" className="font-normal cursor-pointer">Local (Same city)</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="state" id="state" />
-                          <Label htmlFor="state" className="font-normal cursor-pointer">Within state</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="national" id="national" />
-                          <Label htmlFor="national" className="font-normal cursor-pointer">Anywhere in India</Label>
-                        </div>
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                    <FormField control={form.control} name="preferred_location" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Preferred Location (Optional)</FormLabel>
+                        <FormControl><Input placeholder="e.g., Delhi, Mumbai, Bangalore" className="bg-background" {...field} /></FormControl>
+                      </FormItem>
+                    )} />
 
-              <Button type="submit" size="lg" className="w-full" disabled={loading}>
-                {loading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating Recommendations...
-                  </>
-                ) : (
-                  <>
-                    <GraduationCap className="mr-2 h-4 w-4" />
-                    Get My Path
-                  </>
-                )}
-              </Button>
-            </form>
-          </Form>
+                    <FormField control={form.control} name="achievements" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Achievements (Optional)</FormLabel>
+                        <FormControl><Textarea placeholder="Hackathon wins, sports, NCC, clubs..." className="bg-background resize-none" {...field} /></FormControl>
+                      </FormItem>
+                    )} />
+                  </div>
+
+                  <Button type="submit" size="lg" className="w-full bg-gradient-primary hover:opacity-90" disabled={loading}>
+                    {loading ? (
+                      <><Loader2 className="mr-2 h-5 w-5 animate-spin" />Analyzing Your Profile...</>
+                    ) : (
+                      <><Brain className="mr-2 h-5 w-5" />Get AI Recommendations</>
+                    )}
+                  </Button>
+                </form>
+              </Form>
+            </div>
+          </div>
         </div>
       </div>
     </div>
