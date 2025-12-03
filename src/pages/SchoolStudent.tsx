@@ -18,9 +18,9 @@ import {
   Brain, MapPin, Wallet, CheckCircle2, Heart, Target
 } from "lucide-react";
 import { ProfileCompletion } from "@/components/features/ProfileCompletion";
+import { InterestsInput } from "@/components/features/InterestsInput";
 
 const subjects = ["Mathematics", "Physics", "Chemistry", "Biology", "Computer Science", "Commerce", "Economics", "English", "History", "Art"];
-const interests = ["coding", "design", "medicine", "business", "arts", "engineering", "teaching", "research", "sports", "social-work"];
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -261,22 +261,19 @@ export default function SchoolStudent() {
                       <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center">
                         <Heart className="w-4 h-4 text-success" />
                       </div>
-                      <h2 className="font-semibold">Interests</h2>
+                      <h2 className="font-semibold">Your Interests</h2>
                     </div>
-                    <FormField control={form.control} name="interests" render={() => (
+                    <FormField control={form.control} name="interests" render={({ field }) => (
                       <FormItem>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                          {interests.map((interest) => (
-                            <FormField key={interest} control={form.control} name="interests" render={({ field }) => (
-                              <FormItem className="flex items-center space-x-2 space-y-0">
-                                <FormControl>
-                                  <Checkbox checked={field.value?.includes(interest)} onCheckedChange={(checked) => checked ? field.onChange([...field.value, interest]) : field.onChange(field.value?.filter((v) => v !== interest))} className="data-[state=checked]:bg-success" />
-                                </FormControl>
-                                <FormLabel className="font-normal cursor-pointer text-sm capitalize">{interest.replace('-', ' ')}</FormLabel>
-                              </FormItem>
-                            )} />
-                          ))}
-                        </div>
+                        <FormLabel>Type or select your interests</FormLabel>
+                        <FormControl>
+                          <InterestsInput
+                            value={field.value || []}
+                            onChange={field.onChange}
+                            placeholder="Type an interest and press Enter..."
+                            maxItems={10}
+                          />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />

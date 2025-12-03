@@ -17,6 +17,7 @@ import { BadgeDisplay, Badge as BadgeType } from "@/components/features/BadgeDis
 import { XPBar } from "@/components/features/XPBar";
 import { StreakCounter } from "@/components/features/StreakCounter";
 import { AIChatWidget } from "@/components/features/AIChatWidget";
+import { RealAIChatWidget } from "@/components/features/RealAIChatWidget";
 
 const trendingCareers = [
   { name: "AI/ML Engineer", growth: 45, seekers: 12450, category: "Tech" },
@@ -444,9 +445,29 @@ const Index = () => {
           </h2>
           <TrendingCareers careers={trendingCareers} />
         </div>
+
+        {/* Quick Actions */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+          <Card className="glass card-hover cursor-pointer p-4 text-center" onClick={() => navigate('/quiz')}>
+            <Brain className="w-8 h-8 mx-auto mb-2 text-primary" />
+            <p className="font-medium">Take a Quiz</p>
+          </Card>
+          <Card className="glass card-hover cursor-pointer p-4 text-center" onClick={() => navigate('/explore')}>
+            <Compass className="w-8 h-8 mx-auto mb-2 text-secondary" />
+            <p className="font-medium">Explore</p>
+          </Card>
+          <Card className="glass card-hover cursor-pointer p-4 text-center" onClick={() => navigate('/profile')}>
+            <Users className="w-8 h-8 mx-auto mb-2 text-accent" />
+            <p className="font-medium">My Profile</p>
+          </Card>
+          <Card className="glass card-hover cursor-pointer p-4 text-center" onClick={() => navigate('/school-student')}>
+            <Target className="w-8 h-8 mx-auto mb-2 text-success" />
+            <p className="font-medium">Get Started</p>
+          </Card>
+        </div>
       </div>
 
-      <AIChatWidget />
+      <RealAIChatWidget />
     </div>
   );
 };
