@@ -14,6 +14,13 @@ export default function CollegeResults() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // First check if recommendations were passed directly in state
+    if (location.state?.recommendations) {
+      setRecommendations(location.state.recommendations);
+      return;
+    }
+
+    // Otherwise fetch from database
     const fetchData = async () => {
       const profileId = location.state?.profileId;
       if (!profileId) {
