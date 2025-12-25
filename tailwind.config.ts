@@ -166,6 +166,7 @@ export default {
         "gradient-x": "gradient-x 3s ease infinite",
         "shimmer": "shimmer 2s infinite",
         "count-up": "count-up 0.5s ease-out forwards",
+        "stagger-fade": "fade-in 0.5s ease-out forwards",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
