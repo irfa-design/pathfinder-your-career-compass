@@ -112,7 +112,7 @@ export default function CollegeStudent() {
       });
 
       toast({ title: "Success!", description: "Your career path is ready" });
-      navigate('/college-results', { state: { recommendations, profile: profileData } });
+      navigate('/college-results', { state: { recommendations, profileId: profile.id, profile: profileData } });
     } catch (error: any) {
       console.error('Error:', error);
       toast({ title: "Error", description: error.message || "Failed to generate recommendations", variant: "destructive" });
