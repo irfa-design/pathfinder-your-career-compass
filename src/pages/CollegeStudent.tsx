@@ -13,7 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Loader2, Briefcase, Target, Sparkles, ChevronLeft, 
-  GraduationCap, Award, Code, Brain, CheckCircle2 
+  GraduationCap, Award, Code, Brain, CheckCircle2, User
 } from "lucide-react";
 import { ProfileCompletion } from "@/components/features/ProfileCompletion";
 
@@ -123,82 +123,95 @@ export default function CollegeStudent() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Animated background */}
+      {/* Subtle animated background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-secondary/10 blur-3xl animate-float" />
-        <div className="absolute bottom-20 -left-40 w-80 h-80 rounded-full bg-primary/10 blur-3xl animate-float animation-delay-300" />
+        <div className="absolute -top-32 -right-32 w-64 h-64 md:w-80 md:h-80 rounded-full bg-secondary/5 blur-3xl animate-float" />
+        <div className="absolute bottom-20 -left-32 w-56 h-56 md:w-72 md:h-72 rounded-full bg-primary/5 blur-3xl animate-float animation-delay-300" />
       </div>
 
-      <div className="relative max-w-5xl mx-auto px-4 py-8">
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
+        <header className="flex items-center gap-3 md:gap-4 mb-6 md:mb-10">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => navigate('/')}
+            className="shrink-0 h-9 w-9 md:h-10 md:w-10 rounded-full hover:bg-muted"
+          >
             <ChevronLeft className="w-5 h-5" />
           </Button>
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-secondary to-secondary/70 flex items-center justify-center shadow-lg">
-              <Briefcase className="w-6 h-6 text-white" />
+          <div className="flex items-center gap-3 md:gap-4">
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-secondary to-secondary/70 flex items-center justify-center shadow-md shrink-0">
+              <Briefcase className="w-5 h-5 md:w-6 md:h-6 text-secondary-foreground" />
             </div>
-            <div>
-              <h1 className="text-2xl font-display font-bold">Career Profile</h1>
-              <p className="text-sm text-muted-foreground">Share your journey to discover your next steps</p>
+            <div className="min-w-0">
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-display font-bold text-foreground truncate">
+                Career Profile
+              </h1>
+              <p className="text-xs md:text-sm text-muted-foreground line-clamp-1">
+                Share your journey to discover your next steps
+              </p>
             </div>
           </div>
-        </div>
+        </header>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Sidebar */}
-          <div className="lg:col-span-1 space-y-6">
-            <ProfileCompletion steps={completionSteps} />
-            
-            {/* Tips Card */}
-            <div className="glass rounded-2xl p-6">
-              <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-primary" />
-                Quick Tips
-              </h3>
-              <ul className="space-y-3 text-sm text-muted-foreground">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
-                  Be honest about your skills for accurate recommendations
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
-                  Include all relevant certificates - they boost your profile
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
-                  Add achievements like hackathons, projects, or leadership roles
-                </li>
-              </ul>
+        <div className="grid lg:grid-cols-12 gap-6 lg:gap-8">
+          {/* Sidebar - Sticky on desktop */}
+          <aside className="lg:col-span-4 xl:col-span-3 space-y-4 md:space-y-6">
+            <div className="lg:sticky lg:top-6">
+              <ProfileCompletion steps={completionSteps} />
+              
+              <div className="mt-4 md:mt-6 bg-card rounded-xl border border-border p-4 md:p-5 shadow-sm">
+                <h3 className="font-semibold text-sm md:text-base mb-3 md:mb-4 flex items-center gap-2 text-foreground">
+                  <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+                  Quick Tips
+                </h3>
+                <ul className="space-y-2.5 md:space-y-3">
+                  {[
+                    "Be honest about your skills for accurate recommendations",
+                    "Include all relevant certificates - they boost your profile",
+                    "Add achievements like hackathons, projects, or leadership roles"
+                  ].map((tip, index) => (
+                    <li key={index} className="flex items-start gap-2 text-xs md:text-sm text-muted-foreground">
+                      <CheckCircle2 className="w-3.5 h-3.5 md:w-4 md:h-4 text-success mt-0.5 shrink-0" />
+                      <span className="leading-relaxed">{tip}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
+          </aside>
 
           {/* Main Form */}
-          <div className="lg:col-span-2">
-            <div className="glass rounded-2xl p-8 animate-fade-in">
+          <main className="lg:col-span-8 xl:col-span-9">
+            <div className="bg-card rounded-xl border border-border p-4 sm:p-6 md:p-8 shadow-sm animate-fade-in">
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  {/* Basic Info Section */}
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <GraduationCap className="w-4 h-4 text-primary" />
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 md:space-y-8">
+                  
+                  {/* Section: Basic Info */}
+                  <section className="space-y-4 md:space-y-5">
+                    <div className="flex items-center gap-2.5 pb-2 border-b border-border">
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                        <User className="w-4 h-4 text-primary" />
                       </div>
-                      <h2 className="font-semibold">Basic Information</h2>
+                      <h2 className="font-semibold text-base md:text-lg text-foreground">Basic Information</h2>
                     </div>
                     
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
                       <FormField
                         control={form.control}
                         name="name"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Full Name</FormLabel>
+                            <FormLabel className="text-sm font-medium text-foreground">Full Name</FormLabel>
                             <FormControl>
-                              <Input placeholder="Enter your name" className="bg-background" {...field} />
+                              <Input 
+                                placeholder="Enter your name" 
+                                className="h-10 md:h-11 bg-background border-input" 
+                                {...field} 
+                              />
                             </FormControl>
-                            <FormMessage />
+                            <FormMessage className="text-xs" />
                           </FormItem>
                         )}
                       />
@@ -208,11 +221,15 @@ export default function CollegeStudent() {
                         name="degree"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Degree/Program</FormLabel>
+                            <FormLabel className="text-sm font-medium text-foreground">Degree/Program</FormLabel>
                             <FormControl>
-                              <Input placeholder="e.g., B.E CSE, B.Com, BBA" className="bg-background" {...field} />
+                              <Input 
+                                placeholder="e.g., B.E CSE, B.Com, BBA" 
+                                className="h-10 md:h-11 bg-background border-input" 
+                                {...field} 
+                              />
                             </FormControl>
-                            <FormMessage />
+                            <FormMessage className="text-xs" />
                           </FormItem>
                         )}
                       />
@@ -222,21 +239,21 @@ export default function CollegeStudent() {
                         name="year"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Current Year</FormLabel>
+                            <FormLabel className="text-sm font-medium text-foreground">Current Year</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
-                                <SelectTrigger className="bg-background">
+                                <SelectTrigger className="h-10 md:h-11 bg-background border-input">
                                   <SelectValue placeholder="Select year" />
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent>
+                              <SelectContent className="bg-popover border-border">
                                 <SelectItem value="1">1st Year</SelectItem>
                                 <SelectItem value="2">2nd Year</SelectItem>
                                 <SelectItem value="3">3rd Year</SelectItem>
                                 <SelectItem value="4">4th Year</SelectItem>
                               </SelectContent>
                             </Select>
-                            <FormMessage />
+                            <FormMessage className="text-xs" />
                           </FormItem>
                         )}
                       />
@@ -246,24 +263,32 @@ export default function CollegeStudent() {
                         name="cgpa"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>CGPA (Optional)</FormLabel>
+                            <FormLabel className="text-sm font-medium text-foreground">
+                              CGPA <span className="text-muted-foreground font-normal">(Optional)</span>
+                            </FormLabel>
                             <FormControl>
-                              <Input type="number" step="0.01" placeholder="e.g., 8.5" className="bg-background" {...field} />
+                              <Input 
+                                type="number" 
+                                step="0.01" 
+                                placeholder="e.g., 8.5" 
+                                className="h-10 md:h-11 bg-background border-input" 
+                                {...field} 
+                              />
                             </FormControl>
-                            <FormMessage />
+                            <FormMessage className="text-xs" />
                           </FormItem>
                         )}
                       />
                     </div>
-                  </div>
+                  </section>
 
-                  {/* Career Goal Section */}
-                  <div className="space-y-4 pt-6 border-t border-border/50">
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                  {/* Section: Career Goal */}
+                  <section className="space-y-4 md:space-y-5 pt-2">
+                    <div className="flex items-center gap-2.5 pb-2 border-b border-border">
+                      <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
                         <Target className="w-4 h-4 text-accent" />
                       </div>
-                      <h2 className="font-semibold">Career Goal</h2>
+                      <h2 className="font-semibold text-base md:text-lg text-foreground">Career Goal</h2>
                     </div>
 
                     <FormField
@@ -271,32 +296,32 @@ export default function CollegeStudent() {
                       name="career_goal"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>What's your dream career?</FormLabel>
+                          <FormLabel className="text-sm font-medium text-foreground">What's your dream career?</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
-                              <SelectTrigger className="bg-background">
+                              <SelectTrigger className="h-10 md:h-11 bg-background border-input">
                                 <SelectValue placeholder="Select career goal" />
                               </SelectTrigger>
                             </FormControl>
-                            <SelectContent>
+                            <SelectContent className="bg-popover border-border">
                               {careers.map((career) => (
                                 <SelectItem key={career} value={career}>{career}</SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
-                          <FormMessage />
+                          <FormMessage className="text-xs" />
                         </FormItem>
                       )}
                     />
-                  </div>
+                  </section>
 
-                  {/* Skills Section */}
-                  <div className="space-y-4 pt-6 border-t border-border/50">
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center">
+                  {/* Section: Skills */}
+                  <section className="space-y-4 md:space-y-5 pt-2">
+                    <div className="flex items-center gap-2.5 pb-2 border-b border-border">
+                      <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center shrink-0">
                         <Code className="w-4 h-4 text-success" />
                       </div>
-                      <h2 className="font-semibold">Current Skills</h2>
+                      <h2 className="font-semibold text-base md:text-lg text-foreground">Current Skills</h2>
                     </div>
 
                     <FormField
@@ -304,15 +329,15 @@ export default function CollegeStudent() {
                       name="current_skills"
                       render={() => (
                         <FormItem>
-                          <FormLabel>Select skills you have</FormLabel>
-                          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
+                          <FormLabel className="text-sm font-medium text-foreground">Select skills you have</FormLabel>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mt-2">
                             {skills.map((skill) => (
                               <FormField
                                 key={skill}
                                 control={form.control}
                                 name="current_skills"
                                 render={({ field }) => (
-                                  <FormItem className="flex items-center space-x-2 space-y-0">
+                                  <FormItem className="flex items-center gap-2.5 space-y-0 p-2.5 rounded-lg border border-border hover:border-primary/30 hover:bg-muted/50 transition-colors cursor-pointer">
                                     <FormControl>
                                       <Checkbox
                                         checked={field.value?.includes(skill)}
@@ -324,81 +349,97 @@ export default function CollegeStudent() {
                                         className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                                       />
                                     </FormControl>
-                                    <FormLabel className="font-normal cursor-pointer text-sm">{skill}</FormLabel>
+                                    <FormLabel className="font-normal cursor-pointer text-sm text-foreground leading-none">
+                                      {skill}
+                                    </FormLabel>
                                   </FormItem>
                                 )}
                               />
                             ))}
                           </div>
-                          <FormMessage />
+                          <FormMessage className="text-xs mt-2" />
                         </FormItem>
                       )}
                     />
-                  </div>
+                  </section>
 
-                  {/* Achievements Section */}
-                  <div className="space-y-4 pt-6 border-t border-border/50">
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="w-8 h-8 rounded-lg bg-warning/10 flex items-center justify-center">
+                  {/* Section: Achievements */}
+                  <section className="space-y-4 md:space-y-5 pt-2">
+                    <div className="flex items-center gap-2.5 pb-2 border-b border-border">
+                      <div className="w-8 h-8 rounded-lg bg-warning/10 flex items-center justify-center shrink-0">
                         <Award className="w-4 h-4 text-warning" />
                       </div>
-                      <h2 className="font-semibold">Achievements & Certificates</h2>
+                      <h2 className="font-semibold text-base md:text-lg text-foreground">Achievements & Certificates</h2>
                     </div>
 
-                    <FormField
-                      control={form.control}
-                      name="certificates"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Certificates (Optional)</FormLabel>
-                          <FormControl>
-                            <Textarea 
-                              placeholder="Comma separated: Python Course, Web Dev Bootcamp, AWS Certified..." 
-                              className="bg-background resize-none"
-                              {...field} 
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <div className="grid grid-cols-1 gap-4 md:gap-5">
+                      <FormField
+                        control={form.control}
+                        name="certificates"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium text-foreground">
+                              Certificates <span className="text-muted-foreground font-normal">(Optional)</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                placeholder="Comma separated: Python Course, Web Dev Bootcamp, AWS Certified..." 
+                                className="bg-background border-input resize-none min-h-[80px]"
+                                {...field} 
+                              />
+                            </FormControl>
+                            <FormMessage className="text-xs" />
+                          </FormItem>
+                        )}
+                      />
 
-                    <FormField
-                      control={form.control}
-                      name="achievements"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Achievements (Optional)</FormLabel>
-                          <FormControl>
-                            <Textarea 
-                              placeholder="Comma separated: Hackathon Winner, Paper Presentation, Club President..." 
-                              className="bg-background resize-none"
-                              {...field} 
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
+                      <FormField
+                        control={form.control}
+                        name="achievements"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium text-foreground">
+                              Achievements <span className="text-muted-foreground font-normal">(Optional)</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                placeholder="Comma separated: Hackathon Winner, Paper Presentation, Club President..." 
+                                className="bg-background border-input resize-none min-h-[80px]"
+                                {...field} 
+                              />
+                            </FormControl>
+                            <FormMessage className="text-xs" />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </section>
+
+                  {/* Submit Button */}
+                  <div className="pt-4">
+                    <Button 
+                      type="submit" 
+                      size="lg" 
+                      className="w-full h-11 md:h-12 bg-gradient-primary hover:opacity-90 text-primary-foreground font-semibold text-sm md:text-base shadow-md transition-all duration-200" 
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 md:h-5 md:w-5 animate-spin" />
+                          Analyzing Your Profile...
+                        </>
+                      ) : (
+                        <>
+                          <Brain className="mr-2 h-4 w-4 md:h-5 md:w-5" />
+                          Get AI Career Recommendations
+                        </>
                       )}
-                    />
+                    </Button>
                   </div>
-
-                  <Button type="submit" size="lg" className="w-full bg-gradient-primary hover:opacity-90" disabled={loading}>
-                    {loading ? (
-                      <>
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                        Analyzing Your Profile...
-                      </>
-                    ) : (
-                      <>
-                        <Brain className="mr-2 h-5 w-5" />
-                        Get AI Career Recommendations
-                      </>
-                    )}
-                  </Button>
                 </form>
               </Form>
             </div>
-          </div>
+          </main>
         </div>
       </div>
     </div>
