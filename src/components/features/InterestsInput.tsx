@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { X, Plus, Sparkles } from "lucide-react";
+import { X, Plus } from "lucide-react";
 
 interface InterestsInputProps {
   value: string[];
@@ -36,7 +36,7 @@ export function InterestsInput({
       s.toLowerCase().includes(inputValue.toLowerCase()) &&
       !value.includes(s)
     )
-    .slice(0, 8);
+    .slice(0, 6);
 
   const addInterest = (interest: string) => {
     const trimmed = interest.trim();
@@ -68,12 +68,14 @@ export function InterestsInput({
             <Badge 
               key={index} 
               variant="secondary" 
-              className="pl-3 pr-2 py-1.5 text-sm animate-scale-in"
+              className="pl-2.5 pr-1.5 py-1 text-xs md:text-sm bg-primary/10 text-primary border-primary/20 hover:bg-primary/15 transition-colors"
             >
               {interest}
               <button
+                type="button"
                 onClick={() => removeInterest(interest)}
-                className="ml-2 hover:text-destructive transition-colors"
+                className="ml-1.5 p-0.5 rounded-full hover:bg-primary/20 transition-colors"
+                aria-label={`Remove ${interest}`}
               >
                 <X className="h-3 w-3" />
               </button>
@@ -93,33 +95,34 @@ export function InterestsInput({
           onFocus={() => setShowSuggestions(true)}
           onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
           onKeyDown={handleKeyDown}
-          placeholder={value.length >= maxItems ? `Maximum ${maxItems} interests` : placeholder}
+          placeholder={value.length >= maxItems ? `Maximum ${maxItems} interests reached` : placeholder}
           disabled={value.length >= maxItems}
-          className="pr-10"
+          className="h-10 md:h-11 pr-10 bg-background border-input"
         />
         {inputValue && (
           <Button
             type="button"
             variant="ghost"
             size="icon"
-            className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
+            className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 hover:bg-primary/10"
             onClick={() => addInterest(inputValue)}
+            aria-label="Add interest"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-4 w-4 text-primary" />
           </Button>
         )}
 
         {/* Suggestions dropdown */}
-        {showSuggestions && filteredSuggestions.length > 0 && (
-          <div className="absolute z-50 w-full mt-1 bg-popover border rounded-lg shadow-lg max-h-48 overflow-y-auto">
+        {showSuggestions && inputValue && filteredSuggestions.length > 0 && (
+          <div className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg overflow-hidden">
             {filteredSuggestions.map((suggestion, index) => (
               <button
                 key={index}
                 type="button"
                 onClick={() => addInterest(suggestion)}
-                className="w-full px-4 py-2 text-left text-sm hover:bg-muted transition-colors flex items-center gap-2"
+                className="w-full px-3 py-2.5 text-left text-sm hover:bg-muted transition-colors text-foreground flex items-center gap-2"
               >
-                <Sparkles className="h-3 w-3 text-primary" />
+                <Plus className="h-3.5 w-3.5 text-primary shrink-0" />
                 {suggestion}
               </button>
             ))}
@@ -129,26 +132,28 @@ export function InterestsInput({
 
       {/* Quick add suggestions */}
       {value.length < maxItems && (
-        <div>
-          <p className="text-xs text-muted-foreground mb-2">Popular interests:</p>
-          <div className="flex flex-wrap gap-1">
+        <div className="space-y-2">
+          <p className="text-xs text-muted-foreground">Popular interests:</p>
+          <div className="flex flex-wrap gap-1.5">
             {suggestions
               .filter(s => !value.includes(s))
-              .slice(0, 12)
+              .slice(0, 10)
               .map((suggestion, index) => (
                 <button
                   key={index}
                   type="button"
                   onClick={() => addInterest(suggestion)}
-                  className="px-2 py-1 text-xs rounded-full bg-muted hover:bg-primary/20 hover:text-primary transition-colors"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 text-xs rounded-full bg-muted hover:bg-primary/10 hover:text-primary transition-colors text-muted-foreground"
                 >
-                  + {suggestion}
+                  <Plus className="h-3 w-3" />
+                  {suggestion}
                 </button>
               ))}
           </div>
         </div>
       )}
 
+      {/* Counter */}
       <p className="text-xs text-muted-foreground">
         {value.length}/{maxItems} interests selected
       </p>
