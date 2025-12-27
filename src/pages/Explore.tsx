@@ -105,12 +105,12 @@ export default function Explore() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <Select value={locationFilter} onValueChange={setLocationFilter}>
-              <SelectTrigger className="w-full md:w-48">
+            <Select value={locationFilter || "all"} onValueChange={(val) => setLocationFilter(val === "all" ? "" : val)}>
+              <SelectTrigger className="w-full md:w-48 bg-background">
                 <SelectValue placeholder="Filter by State" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">All States</SelectItem>
+              <SelectContent className="bg-popover border-border">
+                <SelectItem value="all">All States</SelectItem>
                 <SelectItem value="maharashtra">Maharashtra</SelectItem>
                 <SelectItem value="karnataka">Karnataka</SelectItem>
                 <SelectItem value="delhi">Delhi</SelectItem>
