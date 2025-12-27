@@ -15,7 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Loader2, BookOpen, GraduationCap, ChevronLeft, Sparkles,
-  Brain, MapPin, Wallet, CheckCircle2, Heart, Target
+  Brain, Wallet, CheckCircle2, Heart, Target, User, MapPin
 } from "lucide-react";
 import { ProfileCompletion } from "@/components/features/ProfileCompletion";
 import { InterestsInput } from "@/components/features/InterestsInput";
@@ -122,150 +122,199 @@ export default function SchoolStudent() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Animated background */}
+      {/* Subtle animated background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-primary/10 blur-3xl animate-float" />
-        <div className="absolute bottom-20 -left-40 w-80 h-80 rounded-full bg-accent/10 blur-3xl animate-float animation-delay-300" />
+        <div className="absolute -top-32 -right-32 w-64 h-64 md:w-80 md:h-80 rounded-full bg-primary/5 blur-3xl animate-float" />
+        <div className="absolute bottom-20 -left-32 w-56 h-56 md:w-72 md:h-72 rounded-full bg-secondary/5 blur-3xl animate-float animation-delay-300" />
       </div>
 
-      <div className="relative max-w-5xl mx-auto px-4 py-8">
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
+        <header className="flex items-center gap-3 md:gap-4 mb-6 md:mb-10">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => navigate('/')}
+            className="shrink-0 h-9 w-9 md:h-10 md:w-10 rounded-full hover:bg-muted"
+          >
             <ChevronLeft className="w-5 h-5" />
           </Button>
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-lg">
-              <BookOpen className="w-6 h-6 text-white" />
+          <div className="flex items-center gap-3 md:gap-4">
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-md shrink-0">
+              <BookOpen className="w-5 h-5 md:w-6 md:h-6 text-primary-foreground" />
             </div>
-            <div>
-              <h1 className="text-2xl font-display font-bold">Student Profile</h1>
-              <p className="text-sm text-muted-foreground">Tell us about yourself to get personalized recommendations</p>
+            <div className="min-w-0">
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-display font-bold text-foreground truncate">
+                Student Profile
+              </h1>
+              <p className="text-xs md:text-sm text-muted-foreground line-clamp-1">
+                Tell us about yourself to get personalized recommendations
+              </p>
             </div>
           </div>
-        </div>
+        </header>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Sidebar */}
-          <div className="lg:col-span-1 space-y-6">
-            <ProfileCompletion steps={completionSteps} />
-            
-            <div className="glass rounded-2xl p-6">
-              <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-primary" />
-                Quick Tips
-              </h3>
-              <ul className="space-y-3 text-sm text-muted-foreground">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
-                  Select subjects you genuinely enjoy, not just the ones you're good at
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
-                  Your interests help us find career paths you'll love
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
-                  Budget and location help filter the best colleges for you
-                </li>
-              </ul>
+        <div className="grid lg:grid-cols-12 gap-6 lg:gap-8">
+          {/* Sidebar - Sticky on desktop */}
+          <aside className="lg:col-span-4 xl:col-span-3 space-y-4 md:space-y-6">
+            <div className="lg:sticky lg:top-6">
+              <ProfileCompletion steps={completionSteps} />
+              
+              <div className="mt-4 md:mt-6 bg-card rounded-xl border border-border p-4 md:p-5 shadow-sm">
+                <h3 className="font-semibold text-sm md:text-base mb-3 md:mb-4 flex items-center gap-2 text-foreground">
+                  <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+                  Quick Tips
+                </h3>
+                <ul className="space-y-2.5 md:space-y-3">
+                  {[
+                    "Select subjects you genuinely enjoy, not just the ones you're good at",
+                    "Your interests help us find career paths you'll love",
+                    "Budget and location help filter the best colleges for you"
+                  ].map((tip, index) => (
+                    <li key={index} className="flex items-start gap-2 text-xs md:text-sm text-muted-foreground">
+                      <CheckCircle2 className="w-3.5 h-3.5 md:w-4 md:h-4 text-success mt-0.5 shrink-0" />
+                      <span className="leading-relaxed">{tip}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
+          </aside>
 
           {/* Main Form */}
-          <div className="lg:col-span-2">
-            <div className="glass rounded-2xl p-8 animate-fade-in">
+          <main className="lg:col-span-8 xl:col-span-9">
+            <div className="bg-card rounded-xl border border-border p-4 sm:p-6 md:p-8 shadow-sm animate-fade-in">
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  {/* Basic Info */}
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <GraduationCap className="w-4 h-4 text-primary" />
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 md:space-y-8">
+                  
+                  {/* Section: Basic Info */}
+                  <section className="space-y-4 md:space-y-5">
+                    <div className="flex items-center gap-2.5 pb-2 border-b border-border">
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                        <User className="w-4 h-4 text-primary" />
                       </div>
-                      <h2 className="font-semibold">Basic Information</h2>
+                      <h2 className="font-semibold text-base md:text-lg text-foreground">Basic Information</h2>
                     </div>
                     
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
                       <FormField control={form.control} name="name" render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Full Name</FormLabel>
-                          <FormControl><Input placeholder="Enter your name" className="bg-background" {...field} /></FormControl>
-                          <FormMessage />
+                          <FormLabel className="text-sm font-medium text-foreground">Full Name</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Enter your name" 
+                              className="h-10 md:h-11 bg-background border-input" 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage className="text-xs" />
                         </FormItem>
                       )} />
 
                       <FormField control={form.control} name="class_level" render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Class</FormLabel>
+                          <FormLabel className="text-sm font-medium text-foreground">Class</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl><SelectTrigger className="bg-background"><SelectValue placeholder="Select class" /></SelectTrigger></FormControl>
-                            <SelectContent>
+                            <FormControl>
+                              <SelectTrigger className="h-10 md:h-11 bg-background border-input">
+                                <SelectValue placeholder="Select class" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="bg-popover border-border">
                               <SelectItem value="10">10th Grade</SelectItem>
                               <SelectItem value="11">11th Grade</SelectItem>
                               <SelectItem value="12">12th Grade</SelectItem>
                             </SelectContent>
                           </Select>
-                          <FormMessage />
+                          <FormMessage className="text-xs" />
                         </FormItem>
                       )} />
 
                       <FormField control={form.control} name="board" render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Board (Optional)</FormLabel>
-                          <FormControl><Input placeholder="e.g., CBSE, ICSE" className="bg-background" {...field} /></FormControl>
-                          <FormMessage />
+                          <FormLabel className="text-sm font-medium text-foreground">
+                            Board <span className="text-muted-foreground font-normal">(Optional)</span>
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="e.g., CBSE, ICSE" 
+                              className="h-10 md:h-11 bg-background border-input" 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage className="text-xs" />
                         </FormItem>
                       )} />
 
                       <FormField control={form.control} name="average_mark" render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Average Mark (%)</FormLabel>
-                          <FormControl><Input type="number" placeholder="e.g., 85" className="bg-background" {...field} /></FormControl>
-                          <FormMessage />
+                          <FormLabel className="text-sm font-medium text-foreground">Average Mark (%)</FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="number" 
+                              placeholder="e.g., 85" 
+                              className="h-10 md:h-11 bg-background border-input" 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage className="text-xs" />
                         </FormItem>
                       )} />
                     </div>
-                  </div>
+                  </section>
 
-                  {/* Subjects */}
-                  <div className="space-y-4 pt-6 border-t border-border/50">
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                  {/* Section: Subjects */}
+                  <section className="space-y-4 md:space-y-5 pt-2">
+                    <div className="flex items-center gap-2.5 pb-2 border-b border-border">
+                      <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
                         <Target className="w-4 h-4 text-accent" />
                       </div>
-                      <h2 className="font-semibold">Favorite Subjects</h2>
+                      <h2 className="font-semibold text-base md:text-lg text-foreground">Favorite Subjects</h2>
                     </div>
+                    
                     <FormField control={form.control} name="favorite_subjects" render={() => (
                       <FormItem>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                           {subjects.map((subject) => (
                             <FormField key={subject} control={form.control} name="favorite_subjects" render={({ field }) => (
-                              <FormItem className="flex items-center space-x-2 space-y-0">
+                              <FormItem className="flex items-center gap-2.5 space-y-0 p-2.5 rounded-lg border border-border hover:border-primary/30 hover:bg-muted/50 transition-colors cursor-pointer">
                                 <FormControl>
-                                  <Checkbox checked={field.value?.includes(subject)} onCheckedChange={(checked) => checked ? field.onChange([...field.value, subject]) : field.onChange(field.value?.filter((v) => v !== subject))} className="data-[state=checked]:bg-primary" />
+                                  <Checkbox 
+                                    checked={field.value?.includes(subject)} 
+                                    onCheckedChange={(checked) => 
+                                      checked 
+                                        ? field.onChange([...field.value, subject]) 
+                                        : field.onChange(field.value?.filter((v) => v !== subject))
+                                    } 
+                                    className="data-[state=checked]:bg-primary data-[state=checked]:border-primary" 
+                                  />
                                 </FormControl>
-                                <FormLabel className="font-normal cursor-pointer text-sm">{subject}</FormLabel>
+                                <FormLabel className="font-normal cursor-pointer text-sm text-foreground leading-none">
+                                  {subject}
+                                </FormLabel>
                               </FormItem>
                             )} />
                           ))}
                         </div>
-                        <FormMessage />
+                        <FormMessage className="text-xs mt-2" />
                       </FormItem>
                     )} />
-                  </div>
+                  </section>
 
-                  {/* Interests */}
-                  <div className="space-y-4 pt-6 border-t border-border/50">
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center">
+                  {/* Section: Interests */}
+                  <section className="space-y-4 md:space-y-5 pt-2">
+                    <div className="flex items-center gap-2.5 pb-2 border-b border-border">
+                      <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center shrink-0">
                         <Heart className="w-4 h-4 text-success" />
                       </div>
-                      <h2 className="font-semibold">Your Interests</h2>
+                      <h2 className="font-semibold text-base md:text-lg text-foreground">Your Interests</h2>
                     </div>
+                    
                     <FormField control={form.control} name="interests" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Type or select your interests</FormLabel>
+                        <FormLabel className="text-sm font-medium text-foreground">
+                          Type or select your interests
+                        </FormLabel>
                         <FormControl>
                           <InterestsInput
                             value={field.value || []}
@@ -274,70 +323,143 @@ export default function SchoolStudent() {
                             maxItems={10}
                           />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-xs" />
                       </FormItem>
                     )} />
-                  </div>
+                  </section>
 
-                  {/* Preferences */}
-                  <div className="space-y-4 pt-6 border-t border-border/50">
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="w-8 h-8 rounded-lg bg-warning/10 flex items-center justify-center">
+                  {/* Section: Preferences */}
+                  <section className="space-y-4 md:space-y-5 pt-2">
+                    <div className="flex items-center gap-2.5 pb-2 border-b border-border">
+                      <div className="w-8 h-8 rounded-lg bg-warning/10 flex items-center justify-center shrink-0">
                         <Wallet className="w-4 h-4 text-warning" />
                       </div>
-                      <h2 className="font-semibold">College Preferences</h2>
+                      <h2 className="font-semibold text-base md:text-lg text-foreground">College Preferences</h2>
                     </div>
                     
-                    <div className="grid md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6">
                       <FormField control={form.control} name="budget_range" render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Budget Range</FormLabel>
-                          <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="space-y-2">
-                            <div className="flex items-center space-x-2"><RadioGroupItem value="low" id="low" /><Label htmlFor="low" className="font-normal cursor-pointer text-sm">Under ₹50K/year</Label></div>
-                            <div className="flex items-center space-x-2"><RadioGroupItem value="medium" id="medium" /><Label htmlFor="medium" className="font-normal cursor-pointer text-sm">₹50K - ₹2L/year</Label></div>
-                            <div className="flex items-center space-x-2"><RadioGroupItem value="high" id="high" /><Label htmlFor="high" className="font-normal cursor-pointer text-sm">Above ₹2L/year</Label></div>
+                        <FormItem className="space-y-3">
+                          <FormLabel className="text-sm font-medium text-foreground">Budget Range</FormLabel>
+                          <RadioGroup 
+                            onValueChange={field.onChange} 
+                            defaultValue={field.value} 
+                            className="space-y-2"
+                          >
+                            {[
+                              { value: "low", label: "Under ₹50K/year" },
+                              { value: "medium", label: "₹50K - ₹2L/year" },
+                              { value: "high", label: "Above ₹2L/year" }
+                            ].map((option) => (
+                              <div 
+                                key={option.value} 
+                                className="flex items-center gap-3 p-2.5 rounded-lg border border-border hover:border-primary/30 hover:bg-muted/50 transition-colors"
+                              >
+                                <RadioGroupItem value={option.value} id={option.value} />
+                                <Label 
+                                  htmlFor={option.value} 
+                                  className="font-normal cursor-pointer text-sm text-foreground flex-1"
+                                >
+                                  {option.label}
+                                </Label>
+                              </div>
+                            ))}
                           </RadioGroup>
                         </FormItem>
                       )} />
 
                       <FormField control={form.control} name="distance_preference" render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Distance Preference</FormLabel>
-                          <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="space-y-2">
-                            <div className="flex items-center space-x-2"><RadioGroupItem value="local" id="local" /><Label htmlFor="local" className="font-normal cursor-pointer text-sm">Same city</Label></div>
-                            <div className="flex items-center space-x-2"><RadioGroupItem value="state" id="state" /><Label htmlFor="state" className="font-normal cursor-pointer text-sm">Within state</Label></div>
-                            <div className="flex items-center space-x-2"><RadioGroupItem value="national" id="national" /><Label htmlFor="national" className="font-normal cursor-pointer text-sm">Anywhere in India</Label></div>
+                        <FormItem className="space-y-3">
+                          <FormLabel className="text-sm font-medium text-foreground">Distance Preference</FormLabel>
+                          <RadioGroup 
+                            onValueChange={field.onChange} 
+                            defaultValue={field.value} 
+                            className="space-y-2"
+                          >
+                            {[
+                              { value: "local", label: "Same city" },
+                              { value: "state", label: "Within state" },
+                              { value: "national", label: "Anywhere in India" }
+                            ].map((option) => (
+                              <div 
+                                key={option.value} 
+                                className="flex items-center gap-3 p-2.5 rounded-lg border border-border hover:border-primary/30 hover:bg-muted/50 transition-colors"
+                              >
+                                <RadioGroupItem value={option.value} id={`distance-${option.value}`} />
+                                <Label 
+                                  htmlFor={`distance-${option.value}`} 
+                                  className="font-normal cursor-pointer text-sm text-foreground flex-1"
+                                >
+                                  {option.label}
+                                </Label>
+                              </div>
+                            ))}
                           </RadioGroup>
                         </FormItem>
                       )} />
                     </div>
 
-                    <FormField control={form.control} name="preferred_location" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Preferred Location (Optional)</FormLabel>
-                        <FormControl><Input placeholder="e.g., Delhi, Mumbai, Bangalore" className="bg-background" {...field} /></FormControl>
-                      </FormItem>
-                    )} />
+                    <div className="grid grid-cols-1 gap-4 md:gap-5">
+                      <FormField control={form.control} name="preferred_location" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-foreground">
+                            <span className="flex items-center gap-2">
+                              <MapPin className="w-4 h-4 text-muted-foreground" />
+                              Preferred Location <span className="text-muted-foreground font-normal">(Optional)</span>
+                            </span>
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="e.g., Delhi, Mumbai, Bangalore" 
+                              className="h-10 md:h-11 bg-background border-input" 
+                              {...field} 
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )} />
 
-                    <FormField control={form.control} name="achievements" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Achievements (Optional)</FormLabel>
-                        <FormControl><Textarea placeholder="Hackathon wins, sports, NCC, clubs..." className="bg-background resize-none" {...field} /></FormControl>
-                      </FormItem>
-                    )} />
+                      <FormField control={form.control} name="achievements" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium text-foreground">
+                            Achievements <span className="text-muted-foreground font-normal">(Optional)</span>
+                          </FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Hackathon wins, sports achievements, NCC, clubs, etc. (comma-separated)" 
+                              className="bg-background border-input resize-none min-h-[80px]" 
+                              {...field} 
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )} />
+                    </div>
+                  </section>
+
+                  {/* Submit Button */}
+                  <div className="pt-4">
+                    <Button 
+                      type="submit" 
+                      size="lg" 
+                      className="w-full h-11 md:h-12 bg-gradient-primary hover:opacity-90 text-primary-foreground font-semibold text-sm md:text-base shadow-md transition-all duration-200" 
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 md:h-5 md:w-5 animate-spin" />
+                          Analyzing Your Profile...
+                        </>
+                      ) : (
+                        <>
+                          <Brain className="mr-2 h-4 w-4 md:h-5 md:w-5" />
+                          Get AI Recommendations
+                        </>
+                      )}
+                    </Button>
                   </div>
-
-                  <Button type="submit" size="lg" className="w-full bg-gradient-primary hover:opacity-90" disabled={loading}>
-                    {loading ? (
-                      <><Loader2 className="mr-2 h-5 w-5 animate-spin" />Analyzing Your Profile...</>
-                    ) : (
-                      <><Brain className="mr-2 h-5 w-5" />Get AI Recommendations</>
-                    )}
-                  </Button>
                 </form>
               </Form>
             </div>
-          </div>
+          </main>
         </div>
       </div>
     </div>
